@@ -17,14 +17,20 @@ type TUserState = {
   user: TUser | null;
   isAuthChecked: boolean;
   isLoading: boolean;
-  error: SerializedError | null;
+  loginError: SerializedError | null;
+  registerError: SerializedError | null;
+  updateUserError: SerializedError | null;
+  logoutError: SerializedError | null;
 };
 
 const initialState: TUserState = {
   user: null,
   isAuthChecked: false,
   isLoading: false,
-  error: null,
+  loginError: null,
+  registerError: null,
+  updateUserError: null,
+  logoutError: null,
 };
 
 export const loginUser = createAsyncThunk('user/login', async (data: TLoginData) => {
@@ -76,7 +82,7 @@ export const userSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
+        state.loginError = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -85,7 +91,7 @@ export const userSlice = createSlice({
       })
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
+        state.registerError = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -95,7 +101,6 @@ export const userSlice = createSlice({
 
       .addCase(getUser.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -105,7 +110,7 @@ export const userSlice = createSlice({
 
       .addCase(logoutUser.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
+        state.logoutError = null;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
@@ -114,25 +119,24 @@ export const userSlice = createSlice({
 
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error;
+        state.loginError = action.error;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error;
+        state.registerError = action.error;
       })
-      .addCase(getUser.rejected, (state, action) => {
+      .addCase(getUser.rejected, (state) => {
         state.isLoading = false;
         state.user = null;
         state.isAuthChecked = true;
-        state.error = action.error;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error;
+        state.logoutError = action.error;
       })
       .addCase(updateUser.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
+        state.updateUserError = null;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -140,7 +144,7 @@ export const userSlice = createSlice({
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error;
+        state.updateUserError = action.error;
       });
   },
 });

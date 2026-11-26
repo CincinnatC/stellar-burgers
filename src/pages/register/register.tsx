@@ -11,7 +11,7 @@ export const Register = (): React.JSX.Element => {
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
-  const error = useSelector((state) => state.user.error);
+  const error = useSelector((state) => state.user.registerError);
 
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();

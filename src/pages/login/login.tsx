@@ -10,7 +10,7 @@ export const Login = (): React.JSX.Element => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const error = useSelector((state) => state.user.error);
+  const error = useSelector((state) => state.user.loginError);
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
 
