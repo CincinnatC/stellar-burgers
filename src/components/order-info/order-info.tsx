@@ -1,21 +1,24 @@
 import { Preloader, OrderInfoUI } from '@ui';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
+import { fetchOrderInfo } from '@services/slices/orderInfoSlice';
+import { useSelector, useDispatch } from '@services/store';
 
 import type { TIngredient } from '@utils-types';
 
 export const OrderInfo = (): React.JSX.Element => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0,
-  };
+  const { number } = useParams<{ number: string }>();
+  const dispatch = useDispatch();
 
-  const ingredients: TIngredient[] = [];
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
+  const orderData = useSelector((state) => state.orderInfo.orderInfo);
+
+  useEffect(() => {
+    if (number) {
+      void dispatch(fetchOrderInfo(Number(number)));
+    }
+  }, [dispatch, number]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -61,5 +64,12 @@ export const OrderInfo = (): React.JSX.Element => {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return (
+    <>
+      <p className="text text_type_digits-default" style={{ textAlign: 'center' }}>
+        #{number?.padStart(6, '0')}
+      </p>
+      <OrderInfoUI orderInfo={orderInfo} />
+    </>
+  );
 };

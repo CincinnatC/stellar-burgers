@@ -1,26 +1,32 @@
+import { Preloader } from '@ui';
 import { ProfileUI } from '@ui-pages';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 
-export const Profile = (): React.JSX.Element => {
-  /** TODO: Взять переменную из стора */
-  const user = {
-    name: '',
-    email: '',
-  };
+import { updateUser } from '@services/slices/userSlice';
+import { useDispatch, useSelector } from '@services/store';
+
+export const Profile = (): React.JSX.Element | null => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const updateUserError = useSelector((state) => state.user.updateUserError?.message);
 
   const [formValue, setFormValue] = useState({
-    name: user.name,
-    email: user.email,
+    name: user?.name ?? '',
+    email: user?.email ?? '',
     password: '',
   });
 
   useEffect(() => {
     setFormValue((prevState) => ({
       ...prevState,
-      name: user?.name || '',
-      email: user?.email || '',
+      name: user?.name ?? '',
+      email: user?.email ?? '',
     }));
   }, [user]);
+
+  if (!user) {
+    return <Preloader />;
+  }
 
   const isFormChanged =
     formValue.name !== user?.name ||
@@ -29,6 +35,7 @@ export const Profile = (): React.JSX.Element => {
 
   const handleSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
+    void dispatch(updateUser(formValue));
   };
 
   const handleCancel = (e: SyntheticEvent): void => {
@@ -54,6 +61,7 @@ export const Profile = (): React.JSX.Element => {
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}
       handleInputChange={handleInputChange}
+      updateUserError={updateUserError}
     />
   );
 };
